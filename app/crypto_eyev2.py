@@ -15,7 +15,7 @@ import joblib
 joblib_file = "embeddings/admin_encodings.joblib"
 
 if not os.path.exists(joblib_file):
-    raise FileNotFoundError(f"❌ Joblib file not found: {joblib_file}")
+    raise FileNotFoundError(f"Joblib file not found: {joblib_file}")
 
 admin_encodings = joblib.load(joblib_file)
 
@@ -26,7 +26,7 @@ if isinstance(admin_encodings, np.ndarray):
         admin_encodings = admin_encodings.reshape(-1, 128).tolist()
 
 if len(admin_encodings) == 0:
-    raise ValueError("❌ No admin faces found in the joblib file!")
+    raise ValueError("No admin faces found in the joblib file!")
 
 threshold = 0.6
 app = Flask(__name__)
@@ -47,6 +47,28 @@ def show_alert_popup():
     msg.exec_()
     alert_flag.clear()
 
+# def show_alert_popup():
+#     msg = QMessageBox()
+#     msg.setIcon(QMessageBox.Warning)
+#     msg.setWindowTitle("⚠️ Security Alert")
+#     msg.setText("⚠️ Alert : Unknown face detected! \n\n Grant Access? [Yes/No] ")
+#     msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+#     msg.setWindowModality(Qt.ApplicationModal)
+#     msg.setWindowFlags(msg.windowFlags() | Qt.WindowStaysOnTopHint)
+#     choice = msg.exec_()
+
+#     if choice == QMessageBox.Yes:
+#         print("✅ Access Allowed")
+#         alert_flag.clear()
+#         return True
+    
+#     else:
+#         print("❌ Access Blocked")
+#         stop_monitoring.set()
+#         alert_flag.clear()
+#         return False
+    
+
 def monitor_webcam():
     global last_detection
     cap = cv2.VideoCapture(0)
@@ -55,7 +77,7 @@ def monitor_webcam():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
     if not cap.isOpened():
-        print("❌ Cannot open webcam")
+        print("Cannot open webcam")
         return
 
     frame_count = 0
@@ -103,7 +125,7 @@ def monitor_webcam():
 
     cap.release()
     if stop_monitoring.is_set():
-        print("❌ Webcam monitoring stopped due to Block action.")
+        print("Webcam monitoring stopped due to Block action.")
 
 @app.route("/last_detection", methods=["GET"])
 def get_last_detection():
